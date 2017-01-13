@@ -1,0 +1,37 @@
+# Java class files
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package files
+*.jar
+*.war
+*.ear
+
+# Virtual machine crash logs
+hs_err_pid*
+
+# Eclipse
+.settings
+.metadata
+.project
+.classpath
+.buildpath
+Servers
+bin
+
+# Netbeans
+nbproject
+build
+dist
+private
+
+# Intellij IDEA
+*.iml
+.idea 
+
+# Maven
+target
+
+logs
