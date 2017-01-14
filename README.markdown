@@ -22,3 +22,7 @@ DDL schema and data was stored in `src/main/resources/db`, execute command below
 mysql --user="demo" --password="demo" --database="demo" < src/main/resources/db/schema.sql
 mysql --user="demo" --password="demo" --database="demo" < src/main/resources/db/data.sql
 ```
+
+## References
+* [Java Connect to Database](http://stackoverflow.com/a/30826155)
+* [Java Logging](http://stackoverflow.com/a/16448421)
