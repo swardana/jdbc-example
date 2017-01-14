@@ -9,9 +9,9 @@ import java.util.List;
  * @param <V> ID
  */
 public interface BasicAction<K, V> {
-    public void create(K data);
+    public void create(K entity);
 
-    public void update(V id, K data);
+    public void update(V id, K entity);
 
     public void delete(V id);
 
