@@ -1,11 +1,5 @@
 package id.swhp.jdbc.config;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.nullValue;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,6 +7,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.nullValue;
 
 public class DatabaseConnectionTest {
     private static final String QUERY = "SELECT id FROM author WHERE id = ?";
@@ -30,15 +29,14 @@ public class DatabaseConnectionTest {
 
     @Test
     public void shouldGetTheCorrectData() {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         try {
-            ps = this.connection.prepareStatement(QUERY);
-            rs = ps.executeQuery();
+            PreparedStatement ps = this.connection.prepareStatement(QUERY);
+            ps.setInt(1, 1);
+            ResultSet rs = ps.executeQuery();
 
             assertThat(rs, is(not(nullValue())));
             assertThat(rs.getObject("id"), is(1));
-        } catch (SQLException e) {
+        } catch (SQLException err) {
 
         }
     }
