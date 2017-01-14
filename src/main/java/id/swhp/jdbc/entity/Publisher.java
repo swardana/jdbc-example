@@ -2,7 +2,7 @@ package id.swhp.jdbc.entity;
 
 import java.io.Serializable;
 
-public class Publisher extends Serializable {
+public class Publisher implements Serializable {
     private Integer id;
     private String name;
 

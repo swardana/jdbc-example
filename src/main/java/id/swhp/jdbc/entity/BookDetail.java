@@ -2,7 +2,7 @@ package id.swhp.jdbc.entity;
 
 import java.io.Serializable;
 
-public class BookDetail extends Serializable {
+public class BookDetail implements Serializable {
     private Integer id;
     private Integer bookId;
     private Integer authorId;
