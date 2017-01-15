@@ -2,8 +2,7 @@ package id.swhp.jdbc.dao.implementation;
 
 import id.swhp.jdbc.dao.BaseDao;
 import id.swhp.jdbc.dao.BasicAction;
-import id.swhp.jdbc.entity.Publisher;
-import sun.rmi.runtime.Log;
+import id.swhp.jdbc.entity.Author;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,29 +13,28 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class PublisherDaoImpl extends BaseDao<Publisher>
-        implements BasicAction<Publisher, Integer> {
+public class AuthorDaoImpl extends BaseDao<Author> implements BasicAction<Author, Integer> {
     // logger
-    private static final Logger LOGGER = Logger.getLogger(PublisherDaoImpl.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AuthorDaoImpl.class.getName());
     private Connection connection;
     // IMPORTANT: give spaces between SELECT, FROM, and WHERE
-    private static final String INSERT = "INSERT INTO publisher(name) VALUES(?)";
-    private static final String UPDATE = "UPDATE publisher SET name = ? WHERE id = ?";
-    private static final String DELETE = "DELETE FROM publisher WHERE id = ?";
-    private static final String GET_ALL = "SELECT * FROM publisher LIMIT ?, ?";
-    private static final String GET_BY_ID = "SELECT * FROM publisher WHERE id = ?";
+    private static final String INSERT = "INSERT INTO author(name) VALUES(?)";
+    private static final String UPDATE = "UPDATE author SET name = ? WHERE id = ?";
+    private static final String DELETE = "DELETE FROM author WHERE id = ?";
+    private static final String GET_ALL = "SELECT * FROM author LIMIT ?, ?";
+    private static final String GET_BY_ID = "SELECT * FROM author WHERE id = ?";
 
     /**
      * Constructor injection
      *
      * @param connection
      */
-    public PublisherDaoImpl(Connection connection) {
+    public AuthorDaoImpl(Connection connection) {
         this.connection = connection;
     }
 
     @Override
-    public void create(Publisher entity) {
+    public void create(Author entity) {
         LOGGER.log(Level.FINER, "Perform Create Data into Database");
         try {
             this.connection.setAutoCommit(false);
@@ -71,7 +69,7 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
     }
 
     @Override
-    public void update(Integer id, Publisher entity) {
+    public void update(Integer id, Author entity) {
         LOGGER.log(Level.FINER, "Perform Update Data in Database");
         try {
             this.connection.setAutoCommit(false);
@@ -142,9 +140,9 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
     }
 
     @Override
-    public List<Publisher> findAll(Integer currentPage, Integer resultRow) {
+    public List<Author> findAll(Integer currentPage, Integer resultRow) {
         LOGGER.log(Level.FINER, "Perform Get All Data in Database");
-        List<Publisher> publishers = new ArrayList<Publisher>();
+        List<Author> authors = new ArrayList<Author>();
         Integer limit = paginationLimit(currentPage, resultRow);
         try {
             PreparedStatement ps = this.connection.prepareStatement(GET_ALL);
@@ -157,8 +155,8 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
 
             LOGGER.log(Level.FINE, "Start Convert ResultSet into Object");
             while (rs.next()) {
-                Publisher publisher = convert(rs);
-                publishers.add(publisher);
+                Author author = convert(rs);
+                authors.add(author);
             }
 
         } catch (SQLException err) {
@@ -167,13 +165,13 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
         } finally {
             LOGGER.log(Level.FINE, "Get All Data Done");
         }
-        return publishers;
+        return authors;
     }
 
     @Override
-    public Publisher findById(Integer id) {
+    public Author findById(Integer id) {
         LOGGER.log(Level.FINER, "Perform Get Data by Id in Database");
-        Publisher publisher = null;
+        Author author = null;
         try {
             PreparedStatement ps = this.connection.prepareStatement(GET_BY_ID);
 
@@ -184,7 +182,7 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
 
             LOGGER.log(Level.FINE, "Start Convert ResultSet into Object");
             while (rs.next()) {
-                publisher = convert(rs);
+                author = convert(rs);
             }
 
         } catch (NullPointerException | SQLException err) {
@@ -194,17 +192,17 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
         } finally {
             LOGGER.log(Level.FINE, "Get Data by Id Done");
         }
-        return publisher;
+        return author;
     }
 
     @Override
-    public Publisher convert(ResultSet resultSet) throws SQLException {
+    public Author convert(ResultSet resultSet) throws SQLException {
         LOGGER.log(Level.FINER, "Convert ResultSet into Object");
-        Publisher publisher = new Publisher();
+        Author author = new Author();
 
-        publisher.setId(resultSet.getInt("id"));
-        publisher.setName(resultSet.getString("name"));
+        author.setId(resultSet.getInt("id"));
+        author.setName(resultSet.getString("name"));
 
-        return publisher;
+        return author;
     }
 }

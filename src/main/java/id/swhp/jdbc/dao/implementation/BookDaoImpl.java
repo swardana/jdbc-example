@@ -2,8 +2,7 @@ package id.swhp.jdbc.dao.implementation;
 
 import id.swhp.jdbc.dao.BaseDao;
 import id.swhp.jdbc.dao.BasicAction;
-import id.swhp.jdbc.entity.Publisher;
-import sun.rmi.runtime.Log;
+import id.swhp.jdbc.entity.Book;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,29 +13,30 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class PublisherDaoImpl extends BaseDao<Publisher>
-        implements BasicAction<Publisher, Integer> {
+public class BookDaoImpl extends BaseDao<Book> implements BasicAction<Book, Integer> {
     // logger
-    private static final Logger LOGGER = Logger.getLogger(PublisherDaoImpl.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AuthorDaoImpl.class.getName());
     private Connection connection;
     // IMPORTANT: give spaces between SELECT, FROM, and WHERE
-    private static final String INSERT = "INSERT INTO publisher(name) VALUES(?)";
-    private static final String UPDATE = "UPDATE publisher SET name = ? WHERE id = ?";
-    private static final String DELETE = "DELETE FROM publisher WHERE id = ?";
-    private static final String GET_ALL = "SELECT * FROM publisher LIMIT ?, ?";
-    private static final String GET_BY_ID = "SELECT * FROM publisher WHERE id = ?";
+    private static final String INSERT = "INSERT INTO book(publisher_id, book_code, title, " +
+            "summary, keywords) VALUES(?, ?, ?, ?, ?)";
+    private static final String UPDATE = "UPDATE book SET publisher_id = ?, book_code = ?," +
+            "title = ?, summary = ?, keywords = ? WHERE id = ?";
+    private static final String DELETE = "DELETE FROM book WHERE id = ?";
+    private static final String GET_ALL = "SELECT * FROM book LIMIT ?, ?";
+    private static final String GET_BY_ID = "SELECT * FROM book WHERE id = ?";
 
     /**
      * Constructor injection
      *
      * @param connection
      */
-    public PublisherDaoImpl(Connection connection) {
+    public BookDaoImpl(Connection connection) {
         this.connection = connection;
     }
 
     @Override
-    public void create(Publisher entity) {
+    public void create(Book entity) {
         LOGGER.log(Level.FINER, "Perform Create Data into Database");
         try {
             this.connection.setAutoCommit(false);
@@ -44,7 +44,11 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
             PreparedStatement ps = this.connection.prepareStatement(INSERT);
 
             // index number is same with order of ? in query statements
-            ps.setString(1, entity.getName());
+            ps.setInt(1, entity.getPublisherId());
+            ps.setString(2, entity.getBookCode());
+            ps.setString(3, entity.getTitle());
+            ps.setString(4, entity.getSummary());
+            ps.setString(5, entity.getKeywords());
 
             ps.executeUpdate();
 
@@ -71,7 +75,7 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
     }
 
     @Override
-    public void update(Integer id, Publisher entity) {
+    public void update(Integer id, Book entity) {
         LOGGER.log(Level.FINER, "Perform Update Data in Database");
         try {
             this.connection.setAutoCommit(false);
@@ -79,8 +83,12 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
             PreparedStatement ps = this.connection.prepareStatement(UPDATE);
 
             // index number is same with order of ? in query statements
-            ps.setString(1, entity.getName());
-            ps.setInt(2, entity.getId());
+            ps.setInt(1, entity.getPublisherId());
+            ps.setString(2, entity.getBookCode());
+            ps.setString(3, entity.getTitle());
+            ps.setString(4, entity.getSummary());
+            ps.setString(5, entity.getKeywords());
+            ps.setInt(6, entity.getId());
 
             ps.executeUpdate();
 
@@ -142,9 +150,9 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
     }
 
     @Override
-    public List<Publisher> findAll(Integer currentPage, Integer resultRow) {
+    public List<Book> findAll(Integer currentPage, Integer resultRow) {
         LOGGER.log(Level.FINER, "Perform Get All Data in Database");
-        List<Publisher> publishers = new ArrayList<Publisher>();
+        List<Book> books = new ArrayList<Book>();
         Integer limit = paginationLimit(currentPage, resultRow);
         try {
             PreparedStatement ps = this.connection.prepareStatement(GET_ALL);
@@ -157,8 +165,8 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
 
             LOGGER.log(Level.FINE, "Start Convert ResultSet into Object");
             while (rs.next()) {
-                Publisher publisher = convert(rs);
-                publishers.add(publisher);
+                Book book = convert(rs);
+                books.add(book);
             }
 
         } catch (SQLException err) {
@@ -167,13 +175,13 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
         } finally {
             LOGGER.log(Level.FINE, "Get All Data Done");
         }
-        return publishers;
+        return books;
     }
 
     @Override
-    public Publisher findById(Integer id) {
+    public Book findById(Integer id) {
         LOGGER.log(Level.FINER, "Perform Get Data by Id in Database");
-        Publisher publisher = null;
+        Book book = null;
         try {
             PreparedStatement ps = this.connection.prepareStatement(GET_BY_ID);
 
@@ -184,7 +192,7 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
 
             LOGGER.log(Level.FINE, "Start Convert ResultSet into Object");
             while (rs.next()) {
-                publisher = convert(rs);
+                book = convert(rs);
             }
 
         } catch (NullPointerException | SQLException err) {
@@ -194,17 +202,21 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
         } finally {
             LOGGER.log(Level.FINE, "Get Data by Id Done");
         }
-        return publisher;
+        return book;
     }
 
     @Override
-    public Publisher convert(ResultSet resultSet) throws SQLException {
+    public Book convert(ResultSet resultSet) throws SQLException {
         LOGGER.log(Level.FINER, "Convert ResultSet into Object");
-        Publisher publisher = new Publisher();
+        Book book = new Book();
 
-        publisher.setId(resultSet.getInt("id"));
-        publisher.setName(resultSet.getString("name"));
+        book.setId(resultSet.getInt("id"));
+        book.setPublisherId(resultSet.getInt("publisher_id"));
+        book.setBookCode(resultSet.getString("book_code"));
+        book.setTitle(resultSet.getString("title"));
+        book.setSummary(resultSet.getString("summary"));
+        book.setKeywords(resultSet.getString("keywords"));
 
-        return publisher;
+        return book;
     }
 }
