@@ -1,7 +1,8 @@
 package id.swhp.jdbc.config;
 
+import org.apache.commons.dbcp.BasicDataSource;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,23 +20,24 @@ public class DatabaseConfig {
     private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/demo";
     private static final String USERNAME = "demo";
     private static final String PASSWORD = "demo";
-    // init connection object
-    private static Connection connection;
+    // init DataSource object
+    private static BasicDataSource dataSource;
 
+    // Private Constructor in order use Singleton Pattern
     private DatabaseConfig() {
     }
 
     static {
+        LOGGER.log(Level.FINER, "Create Connection to Database");
+        dataSource = new BasicDataSource();
+        dataSource.setDriverClassName(DATABASE_DRIVER);
+        dataSource.setUrl(DATABASE_URL);
+        dataSource.setUsername(USERNAME);
+        dataSource.setPassword(PASSWORD);
         try {
-            LOGGER.log(Level.FINER, "Create Connection to Database");
-            Class.forName(DATABASE_DRIVER);
-            try {
-                connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
-            } catch (SQLException e){
-                LOGGER.log(Level.SEVERE, e.toString(), e);
-            }
-        } catch (ClassNotFoundException err) {
-            LOGGER.log(Level.SEVERE, err.toString(), err);
+            dataSource.getConnection();
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, e.toString(), e);
         }
     }
 
@@ -46,7 +48,7 @@ public class DatabaseConfig {
         return instance;
     }
 
-    public Connection getConnection() {
-        return connection;
+    public BasicDataSource getDataSource() {
+        return dataSource;
     }
 }
