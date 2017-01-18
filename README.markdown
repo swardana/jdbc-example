@@ -26,3 +26,4 @@ mysql --user="demo" --password="demo" --database="demo" < src/main/resources/db/
 ## References
 * [Java Connect to Database](http://stackoverflow.com/a/30826155)
 * [Java Logging](http://stackoverflow.com/a/16448421)
+* [DataSource vs DriverManager](http://zetcode.com/tutorials/jeetutorials/datasource/)
