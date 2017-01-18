@@ -7,6 +7,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -17,9 +18,7 @@ import java.util.stream.Collectors;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 
 public class PublisherDaoImplTest {
     private static final String DELETE_TABLE = "DELETE FROM publisher";
@@ -31,16 +30,17 @@ public class PublisherDaoImplTest {
         Publisher publisher = new Publisher();
         publisher.setName("INITIAL DATA");
 
-        Connection connection = DatabaseConfig.getInstance().getConnection();
-        this.publisherDao = new PublisherDaoImpl(connection);
+        DataSource dataSource = DatabaseConfig.getInstance().getDataSource();
+        this.publisherDao = new PublisherDaoImpl(dataSource);
 
         this.publisherDao.create(publisher);
     }
-
+    
     @After
     public void tearDown() {
         try {
-            Connection connection = DatabaseConfig.getInstance().getConnection();
+            DataSource dataSource = DatabaseConfig.getInstance().getDataSource();
+            Connection connection = dataSource.getConnection();
 
             PreparedStatement delete = connection.prepareStatement(DELETE_TABLE);
             PreparedStatement alter = connection.prepareStatement(ALTER_INCREMENT);
@@ -99,7 +99,7 @@ public class PublisherDaoImplTest {
     }
 
     @Test
-    public void shouldDeleteData(){
+    public void shouldDeleteData() {
         Publisher publisher = new Publisher();
         publisher.setName("J.J DAILY");
         List<Publisher> before = new ArrayList<Publisher>();
@@ -124,7 +124,7 @@ public class PublisherDaoImplTest {
     }
 
     @Test
-    public void shouldGetDataById(){
+    public void shouldGetDataById() {
         int id = 1;
         Publisher publisher = this.publisherDao.findById(id);
 

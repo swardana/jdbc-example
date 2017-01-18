@@ -7,6 +7,7 @@ import id.swhp.jdbc.entity.Book;
 import id.swhp.jdbc.entity.BookDetail;
 import id.swhp.jdbc.entity.Publisher;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,6 +20,7 @@ import java.util.logging.Logger;
 public class LibraryDaoImpl extends BaseDao<BookDetail> implements LibraryDao {
     // logger
     private static final Logger LOGGER = Logger.getLogger(AuthorDaoImpl.class.getName());
+    private DataSource dataSource;
     private Connection connection;
     // IMPORTANT: give spaces between SELECT, FROM, and WHERE
     private static final String GET_ALL = "SELECT book_detail.id as id, book.id as book_id, book.book_code, " +
@@ -63,10 +65,10 @@ public class LibraryDaoImpl extends BaseDao<BookDetail> implements LibraryDao {
     /**
      * Constructor injection
      *
-     * @param connection
+     * @param dataSource
      */
-    public LibraryDaoImpl(Connection connection) {
-        this.connection = connection;
+    public LibraryDaoImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
@@ -75,6 +77,7 @@ public class LibraryDaoImpl extends BaseDao<BookDetail> implements LibraryDao {
         List<BookDetail> bookDetails = new ArrayList<BookDetail>();
         Integer limit = paginationLimit(currentPage, resultRow);
         try {
+            this.connection = this.dataSource.getConnection();
             PreparedStatement ps = this.connection.prepareStatement(GET_ALL);
 
             // index number is same with order of ? in query statements
@@ -94,6 +97,13 @@ public class LibraryDaoImpl extends BaseDao<BookDetail> implements LibraryDao {
                     new Object[]{err.getMessage()});
         } finally {
             LOGGER.log(Level.FINE, "Get All Data Done");
+            try {
+                LOGGER.log(Level.FINE, "Close Connection");
+                this.connection.setAutoCommit(true);
+                this.connection.close(); // since using ConnectionPolling it will just in SLEEP Mode
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage());
+            }
         }
         return bookDetails;
     }
@@ -103,6 +113,7 @@ public class LibraryDaoImpl extends BaseDao<BookDetail> implements LibraryDao {
         LOGGER.log(Level.FINER, "Perform Get Data by Id in Database");
         BookDetail bookDetail = null;
         try {
+            this.connection = this.dataSource.getConnection();
             PreparedStatement ps = this.connection.prepareStatement(GET_BY_ID);
 
             // index number is same with order of ? in query statements
@@ -121,6 +132,13 @@ public class LibraryDaoImpl extends BaseDao<BookDetail> implements LibraryDao {
             throw new NullPointerException("Can't Create Publisher Object");
         } finally {
             LOGGER.log(Level.FINE, "Get Data by Id Done");
+            try {
+                LOGGER.log(Level.FINE, "Close Connection");
+                this.connection.setAutoCommit(true);
+                this.connection.close(); // since using ConnectionPolling it will just in SLEEP Mode
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage());
+            }
         }
         return bookDetail;
     }
@@ -131,6 +149,7 @@ public class LibraryDaoImpl extends BaseDao<BookDetail> implements LibraryDao {
         List<BookDetail> bookDetails = new ArrayList<BookDetail>();
         Integer limit = paginationLimit(currentPage, resultRow);
         try {
+            this.connection = this.dataSource.getConnection();
             PreparedStatement ps = this.connection.prepareStatement(GET_BY_PUBLISHER);
 
             // index number is same with order of ? in query statements
@@ -151,6 +170,13 @@ public class LibraryDaoImpl extends BaseDao<BookDetail> implements LibraryDao {
                     new Object[]{err.getMessage()});
         } finally {
             LOGGER.log(Level.FINE, "Get All Data Done");
+            try {
+                LOGGER.log(Level.FINE, "Close Connection");
+                this.connection.setAutoCommit(true);
+                this.connection.close(); // since using ConnectionPolling it will just in SLEEP Mode
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage());
+            }
         }
         return bookDetails;
     }
@@ -161,6 +187,7 @@ public class LibraryDaoImpl extends BaseDao<BookDetail> implements LibraryDao {
         List<BookDetail> bookDetails = new ArrayList<BookDetail>();
         Integer limit = paginationLimit(currentPage, resultRow);
         try {
+            this.connection = this.dataSource.getConnection();
             PreparedStatement ps = this.connection.prepareStatement(GET_BY_AUTHOR);
 
             // index number is same with order of ? in query statements
@@ -181,6 +208,13 @@ public class LibraryDaoImpl extends BaseDao<BookDetail> implements LibraryDao {
                     new Object[]{err.getMessage()});
         } finally {
             LOGGER.log(Level.FINE, "Get All Data Done");
+            try {
+                LOGGER.log(Level.FINE, "Close Connection");
+                this.connection.setAutoCommit(true);
+                this.connection.close(); // since using ConnectionPolling it will just in SLEEP Mode
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage());
+            }
         }
         return bookDetails;
     }

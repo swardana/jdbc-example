@@ -4,6 +4,7 @@ import id.swhp.jdbc.dao.BaseDao;
 import id.swhp.jdbc.dao.BasicAction;
 import id.swhp.jdbc.entity.Author;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,6 +17,7 @@ import java.util.logging.Logger;
 public class AuthorDaoImpl extends BaseDao<Author> implements BasicAction<Author, Integer> {
     // logger
     private static final Logger LOGGER = Logger.getLogger(AuthorDaoImpl.class.getName());
+    private DataSource dataSource;
     private Connection connection;
     // IMPORTANT: give spaces between SELECT, FROM, and WHERE
     private static final String INSERT = "INSERT INTO author(name) VALUES(?)";
@@ -27,16 +29,18 @@ public class AuthorDaoImpl extends BaseDao<Author> implements BasicAction<Author
     /**
      * Constructor injection
      *
-     * @param connection
+     * @param dataSource
      */
-    public AuthorDaoImpl(Connection connection) {
-        this.connection = connection;
+    public AuthorDaoImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
     public void create(Author entity) {
         LOGGER.log(Level.FINER, "Perform Create Data into Database");
+
         try {
+            this.connection = this.dataSource.getConnection();
             this.connection.setAutoCommit(false);
 
             PreparedStatement ps = this.connection.prepareStatement(INSERT);
@@ -61,7 +65,7 @@ public class AuthorDaoImpl extends BaseDao<Author> implements BasicAction<Author
             try {
                 LOGGER.log(Level.FINE, "Close Connection");
                 this.connection.setAutoCommit(true);
-                //this.connection.close();
+                this.connection.close(); // since using ConnectionPolling it will just in SLEEP Mode
             } catch (SQLException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage());
             }
@@ -72,6 +76,7 @@ public class AuthorDaoImpl extends BaseDao<Author> implements BasicAction<Author
     public void update(Integer id, Author entity) {
         LOGGER.log(Level.FINER, "Perform Update Data in Database");
         try {
+            this.connection = this.dataSource.getConnection();
             this.connection.setAutoCommit(false);
 
             PreparedStatement ps = this.connection.prepareStatement(UPDATE);
@@ -97,7 +102,7 @@ public class AuthorDaoImpl extends BaseDao<Author> implements BasicAction<Author
             try {
                 LOGGER.log(Level.FINE, "Close Connection");
                 this.connection.setAutoCommit(true);
-                //this.connection.close();
+                this.connection.close(); // since using ConnectionPolling it will just in SLEEP Mode
             } catch (SQLException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage());
             }
@@ -108,6 +113,7 @@ public class AuthorDaoImpl extends BaseDao<Author> implements BasicAction<Author
     public void delete(Integer id) {
         LOGGER.log(Level.FINER, "Perform Delete Data in Database");
         try {
+            this.connection = this.dataSource.getConnection();
             this.connection.setAutoCommit(false);
 
             PreparedStatement ps = this.connection.prepareStatement(DELETE);
@@ -132,7 +138,7 @@ public class AuthorDaoImpl extends BaseDao<Author> implements BasicAction<Author
             try {
                 LOGGER.log(Level.FINE, "Close Connection");
                 this.connection.setAutoCommit(true);
-                //this.connection.close();
+                this.connection.close(); // since using ConnectionPolling it will just in SLEEP Mode
             } catch (SQLException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage());
             }
@@ -145,6 +151,7 @@ public class AuthorDaoImpl extends BaseDao<Author> implements BasicAction<Author
         List<Author> authors = new ArrayList<Author>();
         Integer limit = paginationLimit(currentPage, resultRow);
         try {
+            this.connection = this.dataSource.getConnection();
             PreparedStatement ps = this.connection.prepareStatement(GET_ALL);
 
             // index number is same with order of ? in query statements
@@ -164,6 +171,12 @@ public class AuthorDaoImpl extends BaseDao<Author> implements BasicAction<Author
                     new Object[]{err.getMessage()});
         } finally {
             LOGGER.log(Level.FINE, "Get All Data Done");
+            try {
+                LOGGER.log(Level.FINE, "Close Connection");
+                this.connection.close(); // since using ConnectionPolling it will just in SLEEP Mode
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage());
+            }
         }
         return authors;
     }
@@ -173,6 +186,7 @@ public class AuthorDaoImpl extends BaseDao<Author> implements BasicAction<Author
         LOGGER.log(Level.FINER, "Perform Get Data by Id in Database");
         Author author = null;
         try {
+            this.connection = this.dataSource.getConnection();
             PreparedStatement ps = this.connection.prepareStatement(GET_BY_ID);
 
             // index number is same with order of ? in query statements
@@ -191,6 +205,12 @@ public class AuthorDaoImpl extends BaseDao<Author> implements BasicAction<Author
             throw new NullPointerException("Can't Create Publisher Object");
         } finally {
             LOGGER.log(Level.FINE, "Get Data by Id Done");
+            try {
+                LOGGER.log(Level.FINE, "Close Connection");
+                this.connection.close(); // since using ConnectionPolling it will just in SLEEP Mode
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage());
+            }
         }
         return author;
     }

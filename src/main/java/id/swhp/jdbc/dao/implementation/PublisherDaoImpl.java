@@ -5,6 +5,7 @@ import id.swhp.jdbc.dao.BasicAction;
 import id.swhp.jdbc.entity.Publisher;
 import sun.rmi.runtime.Log;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,6 +19,7 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
         implements BasicAction<Publisher, Integer> {
     // logger
     private static final Logger LOGGER = Logger.getLogger(PublisherDaoImpl.class.getName());
+    private DataSource dataSource;
     private Connection connection;
     // IMPORTANT: give spaces between SELECT, FROM, and WHERE
     private static final String INSERT = "INSERT INTO publisher(name) VALUES(?)";
@@ -29,16 +31,17 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
     /**
      * Constructor injection
      *
-     * @param connection
+     * @param dataSource
      */
-    public PublisherDaoImpl(Connection connection) {
-        this.connection = connection;
+    public PublisherDaoImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
     public void create(Publisher entity) {
         LOGGER.log(Level.FINER, "Perform Create Data into Database");
         try {
+            this.connection = this.dataSource.getConnection();
             this.connection.setAutoCommit(false);
 
             PreparedStatement ps = this.connection.prepareStatement(INSERT);
@@ -63,7 +66,7 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
             try {
                 LOGGER.log(Level.FINE, "Close Connection");
                 this.connection.setAutoCommit(true);
-                //this.connection.close();
+                this.connection.close(); // since using ConnectionPolling it will just in SLEEP Mode
             } catch (SQLException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage());
             }
@@ -74,6 +77,7 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
     public void update(Integer id, Publisher entity) {
         LOGGER.log(Level.FINER, "Perform Update Data in Database");
         try {
+            this.connection = this.dataSource.getConnection();
             this.connection.setAutoCommit(false);
 
             PreparedStatement ps = this.connection.prepareStatement(UPDATE);
@@ -99,7 +103,7 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
             try {
                 LOGGER.log(Level.FINE, "Close Connection");
                 this.connection.setAutoCommit(true);
-                //this.connection.close();
+                this.connection.close(); // since using ConnectionPolling it will just in SLEEP Mode
             } catch (SQLException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage());
             }
@@ -110,6 +114,7 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
     public void delete(Integer id) {
         LOGGER.log(Level.FINER, "Perform Delete Data in Database");
         try {
+            this.connection = this.dataSource.getConnection();
             this.connection.setAutoCommit(false);
 
             PreparedStatement ps = this.connection.prepareStatement(DELETE);
@@ -134,7 +139,7 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
             try {
                 LOGGER.log(Level.FINE, "Close Connection");
                 this.connection.setAutoCommit(true);
-                //this.connection.close();
+                this.connection.close(); // since using ConnectionPolling it will just in SLEEP Mode
             } catch (SQLException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage());
             }
@@ -147,6 +152,7 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
         List<Publisher> publishers = new ArrayList<Publisher>();
         Integer limit = paginationLimit(currentPage, resultRow);
         try {
+            this.connection = this.dataSource.getConnection();
             PreparedStatement ps = this.connection.prepareStatement(GET_ALL);
 
             // index number is same with order of ? in query statements
@@ -166,6 +172,12 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
                     new Object[]{err.getMessage()});
         } finally {
             LOGGER.log(Level.FINE, "Get All Data Done");
+            try {
+                LOGGER.log(Level.FINE, "Close Connection");
+                this.connection.close(); // since using ConnectionPolling it will just in SLEEP Mode
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage());
+            }
         }
         return publishers;
     }
@@ -175,6 +187,7 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
         LOGGER.log(Level.FINER, "Perform Get Data by Id in Database");
         Publisher publisher = null;
         try {
+            this.connection = this.dataSource.getConnection();
             PreparedStatement ps = this.connection.prepareStatement(GET_BY_ID);
 
             // index number is same with order of ? in query statements
@@ -193,6 +206,12 @@ public class PublisherDaoImpl extends BaseDao<Publisher>
             throw new NullPointerException("Can't Create Publisher Object");
         } finally {
             LOGGER.log(Level.FINE, "Get Data by Id Done");
+            try {
+                LOGGER.log(Level.FINE, "Close Connection");
+                this.connection.close(); // since using ConnectionPolling it will just in SLEEP Mode
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage());
+            }
         }
         return publisher;
     }

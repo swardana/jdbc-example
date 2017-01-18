@@ -10,7 +10,7 @@ import id.swhp.jdbc.entity.Publisher;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.Connection;
+import javax.sql.DataSource;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -25,10 +25,10 @@ public class LibraryDaoTest {
 
     @Before
     public void setUp() {
-        Connection connection = DatabaseConfig.getInstance().getConnection();
-        this.libraryDao = new LibraryDaoImpl(connection);
-        this.authorDao = new AuthorDaoImpl(connection);
-        this.publisherDao = new PublisherDaoImpl(connection);
+        DataSource dataSource = DatabaseConfig.getInstance().getDataSource();
+        this.libraryDao = new LibraryDaoImpl(dataSource);
+        this.authorDao = new AuthorDaoImpl(dataSource);
+        this.publisherDao = new PublisherDaoImpl(dataSource);
     }
 
     @Test
