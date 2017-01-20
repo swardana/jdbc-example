@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
 
 public class DatabaseConnectionTest {
@@ -24,22 +25,27 @@ public class DatabaseConnectionTest {
     }
 
     @Test
-    public void shouldConnect(){
-        assertThat(this.dataSource, is(not(nullValue())));
+    public void shouldConnect() throws SQLException {
+        assertThat(this.dataSource.getConnection(), is(not(nullValue())));
     }
 
     @Test
     public void shouldGetTheCorrectData() {
+        Integer id = 1;
+        Integer resultId = null;
         try {
             Connection connection = this.dataSource.getConnection();
             PreparedStatement ps = connection.prepareStatement(QUERY);
-            ps.setInt(1, 1);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
 
-            assertThat(rs, is(not(nullValue())));
-            assertThat(rs.getObject("id"), is(1));
+            // avoid cursor before the first row
+            if(rs.next()) {
+                resultId = rs.getInt("id");
+            }
         } catch (SQLException err) {
-
+            err.printStackTrace();
         }
+        assertThat(resultId, is(id));
     }
 }
