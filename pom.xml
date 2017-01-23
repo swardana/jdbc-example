@@ -17,11 +17,16 @@
         <java.version>1.8</java.version>
         <compiler-plugin.version>3.5.1</compiler-plugin.version>
         <surfire-plugin>2.19.1</surfire-plugin>
+        <failsafe-plugin>2.19.1</failsafe-plugin>
         <junit.version>4.12</junit.version>
         <hamcrest.version>1.3</hamcrest.version>
         <mockito.version>1.10.19</mockito.version>
         <mysql-connector.version>5.1.40</mysql-connector.version>
         <apache-dbcp.version>1.4</apache-dbcp.version>
+        <!-- For Testing -->
+        <skipTests>false</skipTests>
+        <skipITs>${skipTests}</skipITs>
+        <skipUTs>${skipTests}</skipUTs>
     </properties>
 
     <dependencies>
@@ -83,14 +88,35 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
-            <!-- skipping test: maven clean install -DskipTests -->
+            <!--
+            mvn install -DskipUTs : Skips Unit tests
+            mvn install -DskipITs : Skips Integration tests
+            mvn install -DskipTests : Skips both Unit and Integration Tests
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surfire-plugin}</version>
                 <configuration>
-                    <skipTests>true</skipTests>
+                    <skipTests>${skipUTs}</skipTests>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${failsafe-plugin}</version>
+                <configuration>
+                    <skipTests>${skipTests}</skipTests>
+                    <skipITs>${skipITs}</skipITs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

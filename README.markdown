@@ -27,3 +27,4 @@ mysql --user="demo" --password="demo" --database="demo" < src/main/resources/db/
 * [Java Connect to Database](http://stackoverflow.com/a/30826155)
 * [Java Logging](http://stackoverflow.com/a/16448421)
 * [DataSource vs DriverManager](http://zetcode.com/tutorials/jeetutorials/datasource/)
+* [Seperate Unit & Integration Test](https://antoniogoncalves.org/2012/12/13/lets-turn-integration-tests-with-maven-to-a-first-class-citizen/)

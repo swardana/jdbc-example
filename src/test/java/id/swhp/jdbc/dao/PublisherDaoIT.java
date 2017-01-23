@@ -20,7 +20,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class PublisherDaoImplTest {
+public class PublisherDaoIT {
     private static final String DELETE_TABLE = "DELETE FROM publisher";
     private static final String ALTER_INCREMENT = "ALTER TABLE publisher AUTO_INCREMENT = 1";
     private BasicAction<Publisher, Integer> publisherDao;

@@ -15,7 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
 
-public class DatabaseConnectionTest {
+public class DatabaseConnectionIT {
     private static final String QUERY = "SELECT id FROM author WHERE id = ?";
     private DataSource dataSource;
 

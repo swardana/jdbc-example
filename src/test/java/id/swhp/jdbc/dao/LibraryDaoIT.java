@@ -18,7 +18,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 
-public class LibraryDaoTest {
+public class LibraryDaoIT {
     private LibraryDao libraryDao;
     private BasicAction<Author, Integer> authorDao;
     private BasicAction<Publisher, Integer> publisherDao;
