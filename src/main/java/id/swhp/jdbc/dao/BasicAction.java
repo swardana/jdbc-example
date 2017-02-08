@@ -17,5 +17,5 @@ public interface BasicAction<K, V> {
 
     public List<K> findAll(Integer currentPage, Integer resultRow);
 
-    public K findById(Integer id);
+    public K findById(V id);
 }
