@@ -2,6 +2,11 @@
 Show how to connect into database and perform simple insert, update, delete, and read data from and
 into database.
 
+## Tools & Library
+* Apache Maven (3.3.9)
+* MariaDB (10.0.29)
+* Apache Commons DBCP (1.4)
+
 ## Environment
 
 ### Database
@@ -27,4 +32,5 @@ mysql --user="demo" --password="demo" --database="demo" < src/main/resources/db/
 * [Java Connect to Database](http://stackoverflow.com/a/30826155)
 * [Java Logging](http://stackoverflow.com/a/16448421)
 * [DataSource vs DriverManager](http://zetcode.com/tutorials/jeetutorials/datasource/)
-* [Seperate Unit & Integration Test](https://antoniogoncalves.org/2012/12/13/lets-turn-integration-tests-with-maven-to-a-first-class-citizen/)
+* [Apache Maven Dependency Scope](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html)
+* [Separate Unit & Integration Test](https://antoniogoncalves.org/2012/12/13/lets-turn-integration-tests-with-maven-to-a-first-class-citizen/)
